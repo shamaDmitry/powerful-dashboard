@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { getOrFetchData } from "@/server/services/apiFetcherService";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const data = await getOrFetchData("opensky-limited");
 

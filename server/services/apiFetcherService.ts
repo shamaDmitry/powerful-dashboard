@@ -32,14 +32,19 @@ export async function getOrFetchData(sourceId: string) {
 
     if (cached) return { data: cached.data, fromCache: true, stale: true };
 
-    throw new Error(
-      `Rate limit exceeded for ${sourceId} and no cache available.`,
-    );
+    return {
+      data: null,
+      fromCache: false,
+      error: true,
+      errorMessage: `Rate limit exceeded for ${sourceId} and no cache available.`,
+    };
   }
 
   // 3. Робимо реальний запит до стороннього API
   try {
-    const res = await fetch(source.url);
+    const res = await fetch(source.url, {
+      signal: AbortSignal.timeout(8000),
+    });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const rawData = await res.json();
     const parsedData = source.parseData(rawData);
@@ -55,8 +60,14 @@ export async function getOrFetchData(sourceId: string) {
 
     return { data: parsedData, fromCache: false };
   } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to fetch data";
+    console.error(`[apiFetcherService Error] ${sourceId}:`, errorMessage);
+
     // Якщо API впало — видаємо старий кеш, якщо він є
-    if (cached) return { data: cached.data, fromCache: true, error: true };
-    throw error;
+    if (cached)
+      return { data: cached.data, fromCache: true, error: true, errorMessage };
+
+    return { data: null, fromCache: false, error: true, errorMessage };
   }
 }
