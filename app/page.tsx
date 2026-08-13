@@ -1,10 +1,12 @@
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { getOrFetchData } from "@/server/services/apiFetcherService";
 
-export default function Home() {
+export default async function Home() {
+  const data = await getOrFetchData("opensky-limited");
+
   return (
     <div className="container flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Button>Go</Button>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
 
       <Image
         className="dark:invert h-5 w-[100px]"

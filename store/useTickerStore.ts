@@ -1,0 +1,33 @@
+import { create } from "zustand";
+import { TickerMessage } from "@/types/ticker";
+import { v4 as uuidv4 } from "uuid";
+
+interface TickerState {
+  messages: TickerMessage[];
+  addMessage: (msg: Omit<TickerMessage, "id" | "timestamp">) => void;
+}
+
+export const useTickerStore = create<TickerState>((set) => ({
+  messages: [
+    {
+      id: uuidv4(),
+      category: "space",
+      icon: "🚀",
+      text: "Ініціалізація Ticker Stream...",
+      timestamp: Date.now(),
+    },
+  ],
+  addMessage: (msg) => {
+    return set((state) => {
+      const newMessage: TickerMessage = {
+        ...msg,
+        id: uuidv4(),
+        timestamp: Date.now(),
+      };
+
+      const updated = [newMessage, ...state.messages].slice(0, 20);
+
+      return { messages: updated };
+    });
+  },
+}));
