@@ -37,7 +37,7 @@ export const Ticker: React.FC = () => {
   const animationDuration = Math.max(15, Math.round(totalChars / 18));
 
   return (
-    <div className="bg-slate-950 text-slate-200 h-10 select-none font-mono text-sm flex items-center mb-5 border-b border-slate-800/80 shadow-inner">
+    <div className="bg-slate-950 text-slate-200 h-10 select-none font-mono text-base flex items-center border-b border-slate-800/80 shadow-inner">
       <div className="px-4 flex items-center w-full overflow-hidden">
         <div className="z-10 bg-rose-600 text-white font-bold px-3 py-1 flex items-center gap-1.5 shrink-0 shadow-md rounded-sm tracking-wider text-xs">
           <span className="relative flex h-2 w-2">
@@ -53,11 +53,15 @@ export const Ticker: React.FC = () => {
             <div className="flex items-center gap-3 text-slate-400 text-xs animate-pulse pl-4">
               <div className="w-3.5 h-3.5 border-2 border-rose-500 border-t-transparent rounded-full animate-spin shrink-0" />
 
-              <span className="tracking-wide">Initiation...</span>
+              <span className="tracking-wide text-base">Initiation...</span>
 
               <div className="hidden sm:flex items-center gap-3 ml-2">
-                <div className="h-3 w-28 bg-slate-800/80 rounded animate-shimmer" />
-                <div className="h-3 w-36 bg-slate-800/80 rounded animate-shimmer" />
+                {new Array(5).fill(0).map((_, idx) => (
+                  <div
+                    key={idx}
+                    className="h-5 w-28 rounded animate-shimmer bg-secondary/10!"
+                  />
+                ))}
               </div>
             </div>
           ) : (
@@ -65,20 +69,22 @@ export const Ticker: React.FC = () => {
               className="animate-ticker flex items-center whitespace-nowrap transition-opacity duration-500 ease-out opacity-100"
               style={{ animationDuration: `${animationDuration}s` }}
             >
-              {displayItems.map((item, idx) => (
-                <div
-                  key={`${item.id}-${idx}`}
-                  className="inline-flex items-center gap-2.5 px-6 border-r border-slate-800/60 hover:bg-slate-900/60 transition-colors py-1 cursor-default group"
-                >
-                  <span className="text-base group-hover:scale-110 transition-transform">
-                    {item.icon}
-                  </span>
+              {displayItems.map((item, idx) => {
+                return (
+                  <div
+                    key={`${item.id}-${idx}`}
+                    className="inline-flex items-center gap-2.5 px-6 border-r border-slate-800/60 hover:bg-slate-900/60 transition-colors py-1 cursor-default group"
+                  >
+                    <span className="text-base group-hover:scale-110 transition-transform">
+                      {item.icon}
+                    </span>
 
-                  <span className="text-slate-300 group-hover:text-white transition-colors">
-                    {item.text}
-                  </span>
-                </div>
-              ))}
+                    <span className="text-slate-300 group-hover:text-white transition-colors">
+                      {item.text}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
@@ -86,4 +92,3 @@ export const Ticker: React.FC = () => {
     </div>
   );
 };
-

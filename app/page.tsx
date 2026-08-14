@@ -1,69 +1,116 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { ALL_NAV_ITEMS } from "@/config/nav";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home() {
+export default function Home() {
   return (
-    <div className="container flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Image
-        className="dark:invert h-5 w-[100px]"
-        src="/next.svg"
-        alt="Next.js logo"
-        width={100}
-        height={20}
-        priority
-      />
-      <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-          To get started, edit the{" "}
-          <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-            page.tsx
-          </code>{" "}
-          file.
-        </h1>
-        <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-          Looking for a starting point or more instructions? Head over to{" "}
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            className="font-medium text-zinc-950 dark:text-zinc-50"
-          >
-            Templates
-          </a>{" "}
-          or the{" "}
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            className="font-medium text-zinc-950 dark:text-zinc-50"
-          >
-            Learning
-          </a>{" "}
-          center.
+    <div className="mx-auto space-y-12">
+      {/* Hero */}
+      <section className="pt-6 pb-2 space-y-5">
+        <div className="flex items-center gap-2">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow">
+            <Zap className="h-5 w-5" />
+          </span>
+          <h1 className="text-3xl font-bold tracking-tight">DataPulse</h1>
+        </div>
+        <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          A real-time dashboard aggregating live data from public APIs.
+          Aviation, crypto, weather, and more — all in one place, refreshed
+          automatically.
         </p>
-      </div>
-      <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-        <a
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <Badge variant="secondary" className="gap-1.5 text-sm h-7 px-2.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse inline-block" />
+            {ALL_NAV_ITEMS.length} live sources
+          </Badge>
+
+          <Badge variant="outline" className="gap-1.5 text-sm h-7 px-2.5">
+            Auto-refreshes
+          </Badge>
+
+          <Badge variant="outline" className="gap-1.5 text-sm h-7 px-2.5">
+            Server-cached
+          </Badge>
+        </div>
+      </section>
+
+      {/* API Cards Grid */}
+      <section>
+        <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+          Available Sources
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {ALL_NAV_ITEMS.map((item) => (
+            <Link
+              key={item.id}
+              href={item.href}
+              className="group relative flex flex-col gap-3 rounded-xl border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-border bg-muted text-xl transition-transform duration-200 group-hover:scale-110">
+                  {item.icon}
+                </span>
+
+                {item.badge && (
+                  <Badge
+                    variant={item.badgeVariant ?? "secondary"}
+                    className="text-xs px-1.5 py-0 shrink-0"
+                  >
+                    {item.badge}
+                  </Badge>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-1">
+                <h3 className="font-semibold text-base text-card-foreground group-hover:text-primary transition-colors">
+                  {item.label}
+                </h3>
+
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1 text-xs font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                View source
+                <ArrowRight className="h-3 w-3" />
+              </div>
+
+              {/* Subtle hover glow */}
+              <span
+                className="pointer-events-none absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background:
+                    "radial-gradient(circle at 50% 0%, oklch(0.496 0.265 301.924 / 0.05) 0%, transparent 70%)",
+                }}
+              />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="rounded-xl border border-dashed border-border bg-muted/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-semibold text-sm">Want more sources?</h3>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Add a new API in{" "}
+            <code className="font-mono bg-muted px-1 py-0.5 rounded text-xs">
+              server/config/sources.ts
+            </code>
+          </p>
+        </div>
+        <Link
+          href="/sources/crypto"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground h-8"
         >
-          <Image
-            className="dark:invert h-[14px] w-4"
-            src="/vercel.svg"
-            alt="Vercel logomark"
-            width={16}
-            height={14}
-          />
-          Deploy Now
-        </a>
-        <a
-          className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Documentation
-        </a>
-      </div>
+          Try crypto first <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </section>
     </div>
   );
 }
