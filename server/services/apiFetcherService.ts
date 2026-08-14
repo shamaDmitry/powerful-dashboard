@@ -1,5 +1,5 @@
-// server/services/apiFetcherService.ts
 import { SERVER_SOURCES } from "../config/sources";
+import { TickerMessage } from "@/types/ticker";
 
 // Simple In-Memory Cache
 const cache = new Map<string, { data: unknown; expiresAt: number }>();
@@ -7,6 +7,7 @@ const requestLog = new Map<string, number[]>(); // Лог таймстампів
 
 export async function getOrFetchData(sourceId: string) {
   const source = SERVER_SOURCES[sourceId];
+
   if (!source) throw new Error(`Unknown source: ${sourceId}`);
 
   const now = Date.now();
@@ -45,7 +46,9 @@ export async function getOrFetchData(sourceId: string) {
     const res = await fetch(source.url, {
       signal: AbortSignal.timeout(8000),
     });
+
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
     const rawData = await res.json();
     const parsedData = source.parseData(rawData);
 
@@ -62,12 +65,48 @@ export async function getOrFetchData(sourceId: string) {
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Failed to fetch data";
+
     console.error(`[apiFetcherService Error] ${sourceId}:`, errorMessage);
 
     // Якщо API впало — видаємо старий кеш, якщо він є
-    if (cached)
+    if (cached) {
       return { data: cached.data, fromCache: true, error: true, errorMessage };
+    }
 
     return { data: null, fromCache: false, error: true, errorMessage };
   }
 }
+
+export async function getAllTickerMessages(): Promise<TickerMessage[]> {
+  const sourceIds = Object.keys(SERVER_SOURCES);
+
+  const results = await Promise.allSettled(
+    sourceIds.map((id) => getOrFetchData(id)),
+  );
+
+  const messages: TickerMessage[] = [];
+
+  results.forEach((res, index) => {
+    const sourceId = sourceIds[index];
+    const source = SERVER_SOURCES[sourceId];
+
+    if (res.status === "fulfilled" && res.value?.data) {
+      const formattedText = source.formatMessage
+        ? source.formatMessage(res.value.data)
+        : null;
+
+      if (formattedText) {
+        messages.push({
+          id: source.id,
+          category: source.category,
+          icon: source.icon,
+          text: formattedText,
+          timestamp: Date.now(),
+        });
+      }
+    }
+  });
+
+  return messages;
+}
+

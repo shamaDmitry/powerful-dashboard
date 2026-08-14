@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 interface TickerState {
   messages: TickerMessage[];
   addMessage: (msg: Omit<TickerMessage, "id" | "timestamp">) => void;
+  setMessages: (messages: TickerMessage[]) => void;
 }
 
 export const useTickerStore = create<TickerState>((set) => ({
@@ -30,4 +31,9 @@ export const useTickerStore = create<TickerState>((set) => ({
       return { messages: updated };
     });
   },
+  setMessages: (newMessages) => {
+    if (!newMessages || newMessages.length === 0) return;
+    return set({ messages: newMessages });
+  },
 }));
+

@@ -17,7 +17,7 @@ export const Ticker: React.FC = () => {
           LIVE PULSE
         </div>
 
-        <div className="relative overflow-hidden w-full flex items-center">
+        <div className="relative overflow-hidden w-full flex items-center mx-4">
           <div className="animate-ticker flex items-center whitespace-nowrap">
             {[...messages, ...messages].map((item, idx) => (
               <div
@@ -27,13 +27,6 @@ export const Ticker: React.FC = () => {
                 <span className="text-base">{item.icon}</span>
 
                 <span className="text-slate-300">{item.text}</span>
-
-                <span
-                  suppressHydrationWarning
-                  className="text-xs text-slate-500 ml-1"
-                >
-                  {new Date(item.timestamp).toLocaleTimeString()}
-                </span>
               </div>
             ))}
           </div>
