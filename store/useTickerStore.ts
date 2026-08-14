@@ -9,15 +9,7 @@ interface TickerState {
 }
 
 export const useTickerStore = create<TickerState>((set) => ({
-  messages: [
-    {
-      id: uuidv4(),
-      category: "space",
-      icon: "🚀",
-      text: "Ініціалізація Ticker Stream...",
-      timestamp: Date.now(),
-    },
-  ],
+  messages: [],
   addMessage: (msg) => {
     return set((state) => {
       const newMessage: TickerMessage = {
@@ -36,4 +28,3 @@ export const useTickerStore = create<TickerState>((set) => ({
     return set({ messages: newMessages });
   },
 }));
-

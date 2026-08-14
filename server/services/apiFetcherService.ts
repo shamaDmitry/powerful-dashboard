@@ -44,7 +44,7 @@ export async function getOrFetchData(sourceId: string) {
   // 3. Робимо реальний запит до стороннього API
   try {
     const res = await fetch(source.url, {
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(3000),
     });
 
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
