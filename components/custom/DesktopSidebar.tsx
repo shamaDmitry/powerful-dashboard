@@ -27,7 +27,7 @@ export function DesktopSidebar() {
 
       {/* Footer */}
       <div className="px-4 py-3 border-t border-border shrink-0">
-        <p className="text-[10px] text-muted-foreground/50 leading-relaxed">
+        <p className="text-sm text-muted-foreground/50 leading-relaxed">
           Live data from public APIs.
           <br />
           Refreshes automatically.

@@ -181,4 +181,41 @@ export const SERVER_SOURCES: Record<string, RateLimitedSourceConfig> = {
       return parsed?.quote ? `Kanye West says: "${parsed.quote}"` : null;
     },
   },
+  "earthquakes": {
+    id: "earthquakes",
+    category: "space",
+    icon: "🌋",
+    url: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson",
+    rateLimit: {
+      maxRequests: 60,
+      windowMs: 3600 * 1000,
+    },
+    ttlMs: 300 * 1000, // 5 minutes cache
+    parseData: (rawData: unknown) => {
+      const parsedPayload = rawData as { features?: any[] };
+      const list = (parsedPayload.features || []).map((f: any) => ({
+        id: f.id,
+        mag: f.properties?.mag,
+        place: f.properties?.place,
+        time: f.properties?.time,
+        url: f.properties?.url,
+        tsunami: f.properties?.tsunami,
+        lng: f.geometry?.coordinates?.[0],
+        lat: f.geometry?.coordinates?.[1],
+        depth: f.geometry?.coordinates?.[2],
+      }));
+
+      return {
+        earthquakes: list,
+        timestamp: Date.now(),
+      };
+    },
+    formatMessage: (data: unknown) => {
+      const parsed = data as { earthquakes?: any[] };
+      const latest = parsed?.earthquakes?.[0];
+      return latest
+        ? `Seismic Alert: M ${latest.mag} at ${latest.place}`
+        : null;
+    },
+  },
 };

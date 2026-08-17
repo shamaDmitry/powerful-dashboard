@@ -53,6 +53,20 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
+    label: "Science",
+    items: [
+      {
+        id: "earthquakes",
+        label: "Earthquakes",
+        icon: "🌋",
+        href: "/sources/earthquakes",
+        description: "Real-time global seismic activity",
+        badge: "NEW",
+        badgeVariant: "default",
+      },
+    ],
+  },
+  {
     label: "Fun",
     items: [
       {
